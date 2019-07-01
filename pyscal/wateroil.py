@@ -670,3 +670,25 @@ class WaterOil(object):
         tmp.interpolate(method="slinear", inplace=True)
 
         return tmp[np.isclose(tmp.index, 0.0)].sw.values[0]
+
+
+def slicedict(dct, keys):
+    """Slice a dictionary for a set of keys.
+
+    Keys not existing will be ignored.
+    """
+    return dict((k, dct[k]) for k in keys if k in dct)
+
+class WaterOilFactory(object):
+    """A class to construct WaterOil objects from dictionaries with parameters.
+
+    It will select Corey or LET depending on which parameters are available.
+    If there is any ambiguity, it will raise a ValueError.
+
+    If there is not enough parameters to determine Corey or LET, fallback
+    is Corey and the default parameters defined in WaterOil.
+    """
+    def fromdict(self, params):
+        initkeys = ['swirr', 'swl', 'swcr', 'sorw', 'h']
+        wo = WaterOil(**slicedict(params, initkeys))
+        return wo

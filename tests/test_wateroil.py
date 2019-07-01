@@ -9,7 +9,7 @@ from hypothesis import given, settings
 import hypothesis.strategies as st
 
 from pyscal import WaterOil
-
+from pyscal.wateroil import WaterOilFactory
 
 
 def check_table(df):
@@ -61,3 +61,10 @@ def test_wateroil_let1(l, e, t, krwend, krwmax):
     check_table(wo.table)
     swofstr = wo.SWOF()
     assert len(swofstr) > 100
+
+def test_wateroil_factory():
+    factory = WaterOilFactory()
+    wo = factory.fromdict(dict(swirr=0.01, swl=0.1, bogus='foobar'))
+    assert isinstance(wo, WaterOil)
+    assert wo.swirr == 0.01
+    assert wo.swl == 0.1
