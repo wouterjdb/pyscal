@@ -6,7 +6,7 @@ Script reads base/high/low SWOF and SGOF from ecl include files and interpolates
 parameter(s) in range [-1,1] so that 0 returns base, -1 returns low, and 1 returns high.
 
 Created:  2019.03.21
-Modified: 2019.07.05
+Modified: 2019.07.16
 
 Autors:
 - Eivind Smoergrav, eism
@@ -53,9 +53,8 @@ interpolations:
 #***************************************************************************************
 
 Issues:
-- swof2csv not installed globally
+- does not work for more than first SATNUM
 - deployment
-- revision control / git
 - Script does not currently handle tables with different end points correctly.
   It interpolates saturation by saturation, irregardless. It will ie run, and
   preserve the extreme endpoint. This may or may not be what you want.
@@ -294,7 +293,7 @@ if __name__ == "__main__":
         sys.exit("No such file:" + args.configfile)
     else:
         with open(args.configfile, "r") as ymlfile:
-            cfg = yaml.load(ymlfile)
+            cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
     relperm_delta_s = 0.01
     if "delta_s" in cfg.keys():
@@ -345,11 +344,8 @@ if __name__ == "__main__":
 
     # Loop over satnum and interpolate according to defaul and configuration values
     interpolants = []
-    print(base_df.reset_index("SATNUM")["SATNUM"].unique().max() + 1)
-    print(base_df.describe)
 
     for satnum in range(1, base_df.reset_index("SATNUM")["SATNUM"].unique().max() + 1):
-        print("SATNUM:", satnum)
         interp_values = {"param_w": 0, "param_g": 0}
 
         for interp in cfg["interpolations"]:
