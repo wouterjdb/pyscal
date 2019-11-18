@@ -1,5 +1,7 @@
 """Utility function for pyscal
 """
+from __future__ import absolute_import
+
 import logging
 import six
 import pandas as pd
@@ -7,8 +9,7 @@ import pandas as pd
 import pandas as pd
 from scipy.interpolate import interp1d
 
-from .wateroil import WaterOil
-from .wateroilgas import WaterOilGas
+import pyscal
 from .constants import SWINTEGERS
 from .constants import EPSILON as epsilon
 
@@ -26,8 +27,8 @@ def interpolate_wog(wog_0, wog_1, param, scalesaturations=False):
         WaterOilGas object.
     """
     assert 0 <= param <= 1
-    assert isinstance(wog_0, WaterOilGas)
-    assert isinstance(wog_1, WaterOilGas)
+    assert isinstance(wog_0, pyscal.WaterOilGas)
+    assert isinstance(wog_1, pyscal.WaterOilGas)
     if param <= 0.5:
         return wog_0
     return wog_1
@@ -276,8 +277,8 @@ def interpolate_ow(ow_low, ow_high, parameter, h=0.01):
     # Note: A separate function is for both OilWater and for GasOil. At time of implementation
     # it is guessed to be slightly more work to make one function that tackles both, than
     # two separate. This should be reevaluated later when maintenance kicks in.
-    assert isinstance(ow_low, WaterOil)
-    assert isinstance(ow_high, WaterOil)
+    assert isinstance(ow_low, pyscal.WaterOil)
+    assert isinstance(ow_high, pyscal.WaterOil)
 
     assert 0 <= parameter <= 1
     # Extrapolation is refused, but perhaps later implemented with truncation to (0,1)
@@ -303,7 +304,7 @@ def interpolate_ow(ow_low, ow_high, parameter, h=0.01):
 
     # Construct the new WaterOil object, with interpolated
     # endpoints:
-    ow_new = WaterOil(swl=swl_new, swcr=swcr_new, sorw=sorw_new, h=h)
+    ow_new = pyscal.WaterOil(swl=swl_new, swcr=swcr_new, sorw=sorw_new, h=h)
 
     # Add interpolated relperm data in nonlinear parts:
     ow_new.table["krw"] = weighted_value(
