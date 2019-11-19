@@ -181,7 +181,7 @@ def test_normalize_nonlinpart():
     assert np.isclose(kron(1), 0.8)
 
 
-@settings(deadline=1000)
+@settings(deadline=2000)
 @given(
     st.floats(min_value=0, max_value=0.1),  # swl
     st.floats(min_value=0, max_value=0.0),  # dswcr
