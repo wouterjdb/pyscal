@@ -17,6 +17,28 @@ import numpy as np
 from pyscal import WaterOil, WaterOilGas, GasOil, SCALrecommendation, utils
 
 
+def interpolation_art(repeats=50, interpolants=10):
+    from matplotlib import pyplot as plt
+
+    cmap = plt.get_cmap("viridis")
+    fig, ax = plt.subplots()
+    for counter in range(repeats):
+        swl = random.uniform(0, 0.1)
+        swcr = swl + random.uniform(0, 0.1)
+        sorw = random.uniform(0, 0.2)
+        ow_low = WaterOil(swl=swl, swcr=swcr, sorw=sorw)
+        ow_high = WaterOil(swl=swl + 0.1, swcr=swcr + 0.1, sorw=sorw + 0.1)
+        ow_low.add_corey_water(nw=random.uniform(1, 3), krwend=random.uniform(0.5, 1))
+        ow_high.add_corey_water(nw=random.uniform(1, 3), krwend=random.uniform(0.5, 1))
+        ow_low.add_corey_oil(now=random.uniform(1, 3), kroend=random.uniform(0.5, 1))
+        ow_high.add_corey_oil(now=random.uniform(1, 3), kroend=random.uniform(0.5, 1))
+        color = cmap(random.random())
+        for t in np.arange(0, 1, 1.0 / interpolants):
+            ow_ip = utils.interpolate_ow(ow_low, ow_high, t)
+            ow_ip.plotkrwkrow(ax, color=color, alpha=0.3)
+    plt.show()
+
+
 def test_interpolate_wo():
     swl = random.uniform(0, 0.1)
     swcr = swl + random.uniform(0, 0.1)
@@ -59,7 +81,6 @@ def test_interpolate_wo():
         ow_ip = utils.interpolate_ow(ow_low, ow_high, t)
         ow_ip.plotkrwkrow(ax, color="green", logyscale=True)
     plt.show()
-
 
 
 def interpolateplottest():
