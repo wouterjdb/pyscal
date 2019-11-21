@@ -1,6 +1,9 @@
 Documentation for pyscal
 ========================
 
+.. image:: images/pyscal-logo.png
+   :width: 200
+
 Pyscal is a package for relative permeability/SCAL support in reservoir simulation.
 
 .. toctree::
