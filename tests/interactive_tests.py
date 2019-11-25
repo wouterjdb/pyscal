@@ -17,7 +17,8 @@ import numpy as np
 from pyscal import WaterOil, WaterOilGas, GasOil, SCALrecommendation, utils
 
 
-def interpolation_art(repeats=50, interpolants=10):
+def interpolation_art(repeats=50, interpolants=30, curvetype="corey"):
+    """This code was used to create the Pyscal logo"""
     from matplotlib import pyplot as plt
 
     cmap = plt.get_cmap("viridis")
@@ -28,10 +29,46 @@ def interpolation_art(repeats=50, interpolants=10):
         sorw = random.uniform(0, 0.2)
         ow_low = WaterOil(swl=swl, swcr=swcr, sorw=sorw)
         ow_high = WaterOil(swl=swl + 0.1, swcr=swcr + 0.1, sorw=sorw + 0.1)
-        ow_low.add_corey_water(nw=random.uniform(1, 3), krwend=random.uniform(0.5, 1))
-        ow_high.add_corey_water(nw=random.uniform(1, 3), krwend=random.uniform(0.5, 1))
-        ow_low.add_corey_oil(now=random.uniform(1, 3), kroend=random.uniform(0.5, 1))
-        ow_high.add_corey_oil(now=random.uniform(1, 3), kroend=random.uniform(0.5, 1))
+        if curvetype == "corey":
+            ow_low.add_corey_water(
+                nw=random.uniform(1, 3), krwend=random.uniform(0.5, 1)
+            )
+            ow_high.add_corey_water(
+                nw=random.uniform(1, 3), krwend=random.uniform(0.5, 1)
+            )
+            ow_low.add_corey_oil(
+                now=random.uniform(1, 3), kroend=random.uniform(0.5, 1)
+            )
+            ow_high.add_corey_oil(
+                now=random.uniform(1, 3), kroend=random.uniform(0.5, 1)
+            )
+        elif curvetype == "let":
+            ow_low.add_LET_water(
+                l=random.uniform(1, 3),
+                e=random.uniform(1, 3),
+                t=random.uniform(1, 3),
+                krwend=random.uniform(0.5, 1),
+            )
+            ow_high.add_LET_water(
+                l=random.uniform(1, 3),
+                e=random.uniform(1, 3),
+                t=random.uniform(1, 3),
+                krwend=random.uniform(0.5, 1),
+            )
+            ow_low.add_LET_oil(
+                l=random.uniform(1, 3),
+                e=random.uniform(1, 3),
+                t=random.uniform(1, 3),
+                kroend=random.uniform(0.5, 1),
+            )
+            ow_high.add_LET_oil(
+                l=random.uniform(1, 3),
+                e=random.uniform(1, 3),
+                t=random.uniform(1, 3),
+                kroend=random.uniform(0.5, 1),
+            )
+        else:
+            print("ERROR, wrong curvetype")
         color = cmap(random.random())
         for t in np.arange(0, 1, 1.0 / interpolants):
             ow_ip = utils.interpolate_ow(ow_low, ow_high, t)
